@@ -52,7 +52,7 @@ const handleCommand = (command) => {
       cancelButtonText: "取消",
       type: "warning",
     }).then(() => {
-      api.post("/account/loginOut").then(() => {
+      api.post("/account_api/account/loginOut").then(() => {
         utils.showMessage(200, "账户退出成功！");
         store.setToken("null");
         router.push("/login");

@@ -89,7 +89,7 @@ const menuData = ref([]);
 const menuData2 = [];
 const openeds = ref(router.currentRoute.value.name);
 onBeforeMount(() => {
-  api.get("account/getUserCenterMenu").then((res) => {
+  api.get("/account_api/account/getUserCenterMenu").then((res) => {
     menuData.value = res.data.data;
     menuData2.push(res.data.data);
   });

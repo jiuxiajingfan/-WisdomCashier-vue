@@ -26,11 +26,10 @@
         </el-button>
       </el-col>
       <el-col :span="8" :offset="7" style="margin-top: 2%">
-        <el-card style="width: 600px">
+        <el-card class="user-info-card" style="width: 600px">
           <template #header>
             <div class="card-header">
               <span class="ss">用户信息</span>
-              <el-switch v-show="false" v-model="userModel.change" />
             </div>
           </template>
           <el-row>
@@ -53,19 +52,19 @@
           <el-divider />
           <el-row>
             <el-col :span="6" :offset="1">
-              <span class="ss">手机号: </span>
+              <span class="ss">手机号：</span>
             </el-col>
             <el-col :span="13" :offset="1">
-              <span class="ss"> {{ user.getPhone }}</span>
+              <span class="ss">{{ user.getPhone }}</span>
             </el-col>
           </el-row>
           <el-divider />
           <el-row>
             <el-col :span="6" :offset="1">
-              <span class="ss">邮箱: </span>
+              <span class="ss">邮箱：</span>
             </el-col>
             <el-col :span="13" :offset="1">
-              <span class="ss"> {{ user.getEmail }}</span>
+              <span class="ss">{{ user.getEmail }}</span>
             </el-col>
           </el-row>
           <el-divider />
@@ -156,18 +155,21 @@ const copy = () => {
 .copyBtn {
   --el-color-white: #000000;
 }
+.user-info-card {
+  margin-top: 20px;
+  background-color: #f5f7fa;
+  padding: 20px;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .ss {
-  font-family: var(--identity-gm3-migration-body1-font);
-  font-size: 16px;
-  font-weight: 400;
-  letter-spacing: 0;
-  line-height: 24px;
-  hyphens: auto;
-  word-break: break-word;
-  word-wrap: break-word;
-  color: var(--gm3-sys-color-on-background, #1f1f1f);
-  margin: 0;
-  padding: 0;
-  width: 100%;
+  font-size: 18px;
+  font-weight: bold;
+  margin-right: 10px;
 }
 </style>

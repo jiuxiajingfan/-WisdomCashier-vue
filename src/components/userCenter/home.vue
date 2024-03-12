@@ -62,11 +62,11 @@ const img = ref([]);
 const newSData = ref([]);
 const activityData = ref([]);
 onBeforeMount(() => {
-  api.get("news/getNews").then((res) => {
+  api.get("/biz_api/news/getNews").then((res) => {
     newSData.value = res.data.data.newsList;
     activityData.value = res.data.data.activeList;
   });
-  api.get("news/getAdvertising").then((res) => {
+  api.get("/biz_api/news/getAdvertising").then((res) => {
     img.value = res.data.data;
     console.log(img.value);
   });

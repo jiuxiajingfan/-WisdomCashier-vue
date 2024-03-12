@@ -91,7 +91,7 @@ const menuData2 = [];
 const openeds = ref(router.currentRoute.value.name);
 onBeforeMount(() => {
   api
-    .get("shop/getShopMenu", {
+    .get("/biz_api/shop/getShopMenu", {
       params: {
         shopId: router.currentRoute.value.query.id,
       },

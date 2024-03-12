@@ -240,7 +240,7 @@ const register = () => {
   registerForm.value.validate((valid) => {
     if (valid) {
       api
-        .post("/account/createUser", {
+        .post("/account_api/account/createUser", {
           code: registerFormData.code,
           email: registerFormData.email,
           userName: registerFormData.name,
@@ -263,7 +263,7 @@ const register = () => {
   });
 };
 const setUser = () => {
-  api.get("/account/getUserDetail").then((res) => {
+  api.get("/account_api/account/getUserDetail").then((res) => {
     const user = useUserStore(pinia);
     let data = res.data.data;
     user.setId(data.id);
@@ -316,7 +316,7 @@ export default {
     success(params) {
       // params 返回的二次验证参数, 和登录参数一起回传给登录接口，方便后台进行二次验证
       api
-        .post("account/login", {
+        .post("/account_api/account/login", {
           username: this.loginFormData.name,
           password: md5(this.loginFormData.password + this.loginFormData.name),
           verify: params.captchaVerification,
@@ -327,7 +327,7 @@ export default {
           } else {
             let store = useAuthStore();
             store.setToken("bearer " + res.data.data.token);
-            api.get("/account/getUserDetail").then((res) => {
+            api.get("/account_api/account/getUserDetail").then((res) => {
               const user = useUserStore(pinia);
               let data = res.data.data;
               user.setId(data.id);

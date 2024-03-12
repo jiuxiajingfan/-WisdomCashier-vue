@@ -285,7 +285,7 @@
               <el-button
                 size="large"
                 style="margin-left: 30px; margin-top: 5px; height: 80%"
-                @click="dialogVisiblezfb = true"
+                @click="buyGoods(2)"
                 :disabled="Trade.get.length === 0 || status[1] === 0"
               >
                 <alipay
@@ -336,12 +336,12 @@
               <el-input
                 ref="zfbinput"
                 v-model="userPayID"
-                @keyup.enter="alipayP"
+                @keyup.enter="pay(2)"
               ></el-input>
               <template #footer>
                 <span class="dialog-footer">
                   <el-button @click="dialogVisiblezfb = false">取消</el-button>
-                  <el-button type="primary" @click="alipayP"> 确定 </el-button>
+                  <el-button type="primary" @click="pay(2)"> 确定 </el-button>
                 </span>
               </template>
             </el-dialog>
@@ -574,6 +574,7 @@ const Hang = useHangStore(pinia);
 const Trade = useTradeStore(pinia);
 const { hangList } = storeToRefs(Hang);
 const { tradeList } = storeToRefs(Trade);
+let tradeNo = ref("");
 let searchText = ref("");
 const router = useRouter();
 let dialogVisiblezfb = ref(false);
@@ -628,6 +629,26 @@ const openadd = () => {
   }
   dialogFormVisible.value = true;
 };
+const buyGoods = (type) => {
+  api
+    .post("/biz_api/goods/buy", {
+      goods: Trade.get,
+      type: 2,
+      sum: sumM.value,
+      sid: router.currentRoute.value.query.id,
+      shopId: router.currentRoute.value.query.id,
+      vip: isVip.value,
+      phone: vipNo.value,
+    })
+    .then((res) => {
+      if (res.data.code != 200) {
+        utils.showErrMessage(res.data.msg);
+      } else {
+        dialogVisiblezfb.value = true;
+        tradeNo.value = res.data.data;
+      }
+    });
+};
 const vipcheckFun = () => {
   lod.value = true;
   api
@@ -654,7 +675,7 @@ const vipcheckFun = () => {
 const queryTaskList = () => {
   lod.value = true;
   api
-    .get("/Goods/getGood", {
+    .get("/biz_api/goods/getGood", {
       params: {
         gid: searchText.value.trim(),
         sid: router.currentRoute.value.query.id,
@@ -819,8 +840,7 @@ const form = reactive({
   type: "",
 });
 const vipNo = ref("");
-const alipayP = () => {
-  // caclSum();
+const pay = (type) => {
   const loading = ElLoading.service({
     lock: true,
     text: "订单创建中（请勿刷新或关闭界面）",
@@ -829,24 +849,16 @@ const alipayP = () => {
   nextTick(() => {
     // Loading should be closed asynchronously
     api
-      .post("/pay/aliPay", {
+      .post("/biz_api/pay/pay", {
         price: sumM.value.toFixed(2),
-        shopName: router.currentRoute.value.query.id,
+        shopName: "副食品店",
         userID: userPayID.value,
+        shopId: router.currentRoute.value.query.id,
+        id: tradeNo.value,
+        type: type,
       })
       .then((res) => {
-        if (res.data.msg == "10000") {
-          loading.close();
-          ElNotification({
-            title: "支付成功",
-            message: "用户支付成功",
-            type: "success",
-            duration: 5000,
-          });
-          dialogVisiblezfb.value = false;
-          buy(2, res.data.data.remoteID, res.data.data.shopID);
-          userPayID.value = "";
-        } else if (res.data.msg == "10003") {
+        if (res.data.data.success == true) {
           loading.setText(
             "订单创建成功！等待用户付款中！30秒内未支付则自动取消订单（请勿刷新或关闭界面）"
           );
@@ -854,13 +866,14 @@ const alipayP = () => {
           var st = setInterval(function () {
             cnt++;
             api
-              .get("/pay/queryAliPay", {
+              .get("/biz_api/pay/status", {
                 params: {
                   tradeNo: res.data.data.remoteID,
+                  type: type,
                 },
               })
               .then((res) => {
-                if (res.data.data === "TRADE_SUCCESS") {
+                if (res.data.data.code === "10000") {
                   clearInterval(st);
                   loading.close();
                   ElNotification({
@@ -870,30 +883,13 @@ const alipayP = () => {
                     duration: 5000,
                   });
                   dialogVisiblezfb.value = false;
-                  buy(2, res.data.data.remoteID, res.data.data.shopID);
                   userPayID.value = "";
                 }
               });
             if (cnt === 10) {
               clearInterval(st);
-              api.get("/pay/closePay", {
-                params: {
-                  tradeNo: res.data.data.remoteID,
-                  sid: router.currentRoute.value.query.id,
-                },
-              });
-              api.post("/Goods/buyGood", {
-                goods: Trade.get,
-                type: 2,
-                sum: sumM.value,
-                sid: router.currentRoute.value.query.id,
-                remoteNo: res.data.data.remoteID,
-                status: 2,
-                id: res.data.data.shopID,
-                vip: isVip.value,
-                phone: vipNo.value,
-              });
               loading.close();
+              dialogVisiblezfb.value = false;
               ElNotification({
                 title: "支付失败",
                 message: "用户支付超时！请重新扫描用户付款码",
@@ -903,6 +899,7 @@ const alipayP = () => {
               userPayID.value = "";
             }
           }, 3000);
+          userPayID.value = "";
         } else {
           api
             .get("/pay/cancelPay", {
@@ -914,17 +911,6 @@ const alipayP = () => {
             .then((res) => {
               utils.showMessage(res.data.code, res.data.msg);
             });
-          api.post("/Goods/buyGood", {
-            goods: Trade.get,
-            type: 2,
-            sum: sumM.value,
-            sid: router.currentRoute.value.query.id,
-            remoteNo: res.data.data.remoteID,
-            status: 7,
-            id: res.data.data.shopID,
-            vip: isVip.value,
-            phone: vipNo.value,
-          });
           loading.close();
           ElNotification({
             title: "支付失败",

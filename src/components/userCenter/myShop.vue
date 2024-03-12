@@ -108,7 +108,7 @@ import utils from "@/utils/utils";
 const router = useRouter();
 onBeforeMount(() => {
   api
-    .post("shop/getUserShopPage", {
+    .post("/biz_api/shop/getUserShopPage", {
       current: 1,
       pageSize: 20,
       name: searchText.value,
@@ -152,7 +152,7 @@ const queryTaskList = () => {
     currentText = searchText.value;
   }
   api
-    .post("shop/getUserShopPage", {
+    .post("/biz_api/shop/getUserShopPage", {
       current: current.value,
       pageSize: pageSize.value,
       name: searchText.value,

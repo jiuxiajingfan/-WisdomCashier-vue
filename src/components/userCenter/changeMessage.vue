@@ -103,7 +103,7 @@ const userModel = reactive({
 
 const changeName = () => {
   api
-    .get("/account/changeUserNickName", {
+    .get("/account_api/account/changeUserNickName", {
       params: {
         name: userModel.name,
       },
@@ -133,7 +133,7 @@ const getEmailCode = () => {
 };
 const changeEmail = () => {
   api
-    .post("/account/changeUserEmail", {
+    .post("/account_api/account/changeUserEmail", {
       email: userModel.email,
       code: userModel.code,
     })
@@ -198,7 +198,7 @@ const changePassword = () => {
   changePasswordModel.value.validate((valid) => {
     if (valid) {
       api
-        .post("/account/changePwd", {
+        .post("/account_api/account/changePwd", {
           pwdOriginal: md5(userModel.pwdOriginal + user.getName),
           pwdNew: md5(userModel.pwdNew + user.getName),
           pwdConfirm: md5(userModel.pwdNew2 + user.getName),

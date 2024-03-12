@@ -817,7 +817,7 @@ export default {
       this.loading = 1;
       this.setStep(3);
       api
-        .post("/account/changeIcon", { url: this.createImgUrl })
+        .post("/account_api/account/changeIcon", { url: this.createImgUrl })
         .then((resData) => {
           if (resData.data.code === 200) {
             this.loading = 2;
