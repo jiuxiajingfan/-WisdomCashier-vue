@@ -496,10 +496,7 @@
                   >
                     离开
                   </el-button>
-                  <el-button
-                    type="primary"
-                    @click="buy(1, '', '')"
-                    :loading="lod"
+                  <el-button type="primary" @click="XJPay()" :loading="lod"
                     >确认</el-button
                   >
                 </span>
@@ -633,7 +630,7 @@ const buyGoods = (type) => {
   api
     .post("/biz_api/goods/buy", {
       goods: Trade.get,
-      type: 2,
+      type: type,
       sum: sumM.value,
       sid: router.currentRoute.value.query.id,
       shopId: router.currentRoute.value.query.id,
@@ -644,8 +641,12 @@ const buyGoods = (type) => {
       if (res.data.code != 200) {
         utils.showErrMessage(res.data.msg);
       } else {
-        dialogVisiblezfb.value = true;
         tradeNo.value = res.data.data;
+        if (type === 2) {
+          dialogVisiblezfb.value = true;
+        } else if (type === 1) {
+          //todo
+        }
       }
     });
 };
@@ -671,6 +672,13 @@ const vipcheckFun = () => {
     .finally((res) => {
       lod.value = false;
     });
+};
+const XJPay = () => {
+  buyGoods(0);
+  setTimeout(() => {
+    pay(0);
+  }, 1000);
+  moneyCharge.value = false;
 };
 const queryTaskList = () => {
   lod.value = true;
@@ -751,38 +759,6 @@ const onMonery = () => {
 const vipcheckf = () => {
   vipcheck.value = true;
 };
-
-const buy = (type, no, remoteID) => {
-  lod.value = true;
-  api
-    .post("/Goods/buyGood", {
-      goods: Trade.get,
-      type: type,
-      sum: sumM.value,
-      sid: router.currentRoute.value.query.id,
-      remoteNo: no,
-      status: 3,
-      id: remoteID,
-      vip: isVip.value,
-      phone: vipNo.value,
-    })
-    .then((res) => {
-      if (res.data.code === 200) {
-        if (type === 1) moneyCharge.value = false;
-        utils.showMessage(res.data.code, "结算成功！");
-        Trade.clear();
-        sumM.value = 0;
-        giveMoney.value = 0;
-        picshow.value = false;
-        isVip.value = 0;
-      } else {
-        utils.showMessage(res.data.code, "结算失败请重试或联系管理员！");
-      }
-    })
-    .finally(() => {
-      lod.value = false;
-    });
-};
 let dialogFormVisible = ref(false);
 const dialogFormVisible2 = ref(false);
 const formLabelWidth = "140px";
@@ -840,6 +816,15 @@ const form = reactive({
   type: "",
 });
 const vipNo = ref("");
+const clear = () => {
+  Trade.clear();
+  sumM.value = 0;
+  giveMoney.value = 0;
+  picshow.value = false;
+  isVip.value = 0;
+  tradeNo.value = "";
+  userPayID.value = "";
+};
 const pay = (type) => {
   const loading = ElLoading.service({
     lock: true,
@@ -873,22 +858,20 @@ const pay = (type) => {
                 },
               })
               .then((res) => {
-                if (res.data.data.code === "10000") {
+                if (res.data.data.code === 3) {
                   clearInterval(st);
-                  loading.close();
                   ElNotification({
                     title: "支付成功",
                     message: "用户支付成功！",
                     type: "success",
                     duration: 5000,
                   });
-                  dialogVisiblezfb.value = false;
-                  userPayID.value = "";
+                  clear();
+                  loading.close();
                 }
               });
             if (cnt === 10) {
               clearInterval(st);
-              loading.close();
               dialogVisiblezfb.value = false;
               ElNotification({
                 title: "支付失败",
@@ -897,21 +880,11 @@ const pay = (type) => {
                 duration: 0,
               });
               userPayID.value = "";
+              loading.close();
             }
           }, 3000);
           userPayID.value = "";
         } else {
-          api
-            .get("/pay/cancelPay", {
-              params: {
-                tradeNo: res.data.data.remoteID,
-                sid: router.currentRoute.value.query.id,
-              },
-            })
-            .then((res) => {
-              utils.showMessage(res.data.code, res.data.msg);
-            });
-          loading.close();
           ElNotification({
             title: "支付失败",
             message: "用户支付失败！请重新扫描用户付款码",
@@ -919,6 +892,7 @@ const pay = (type) => {
             duration: 0,
           });
           userPayID.value = "";
+          loading.close();
         }
       });
   });
