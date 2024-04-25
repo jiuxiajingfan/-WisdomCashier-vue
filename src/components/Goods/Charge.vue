@@ -566,11 +566,14 @@ import pinia from "@/store/store";
 import { storeToRefs } from "pinia/dist/pinia";
 import { useHangStore } from "@/store/hangon";
 import { useTradeStore } from "@/store/trade";
+import { useUserStore } from "@/store/user";
 
 const Hang = useHangStore(pinia);
 const Trade = useTradeStore(pinia);
+const User = useUserStore(pinia);
 const { hangList } = storeToRefs(Hang);
 const { tradeList } = storeToRefs(Trade);
+const { shopId } = storeToRefs(User);
 let tradeNo = ref("");
 let searchText = ref("");
 const router = useRouter();
@@ -632,8 +635,8 @@ const buyGoods = (type) => {
       goods: Trade.get,
       type: type,
       sum: sumM.value,
-      sid: router.currentRoute.value.query.id,
-      shopId: router.currentRoute.value.query.id,
+      sid: shopId.value,
+      shopId: shopId.value,
       vip: isVip.value,
       phone: vipNo.value,
     })
@@ -655,7 +658,7 @@ const vipcheckFun = () => {
   api
     .get("Shop/isVip", {
       params: {
-        sid: router.currentRoute.value.query.id,
+        sid: shopId,
         phone: vipNo.value,
       },
     })
@@ -686,7 +689,7 @@ const queryTaskList = () => {
     .get("/biz_api/goods/getGood", {
       params: {
         gid: searchText.value.trim(),
-        sid: router.currentRoute.value.query.id,
+        sid: shopId.value,
       },
     })
     .then((res) => {
@@ -808,7 +811,7 @@ const form = reactive({
   price_in: 0,
   price_out: 0,
   price_vip: 0,
-  sid: router.currentRoute.value.query.id,
+  sid: shopId,
   date: "",
   profit: 0,
   shelfLife: "",
@@ -838,7 +841,7 @@ const pay = (type) => {
         price: sumM.value.toFixed(2),
         shopName: "副食品店",
         userID: userPayID.value,
-        shopId: router.currentRoute.value.query.id,
+        shopId: shopId.value,
         id: tradeNo.value,
         type: type,
       })
@@ -1066,7 +1069,7 @@ const leastFun = () => {
   api
     .get("/trade/queryLeast", {
       params: {
-        sid: router.currentRoute.value.query.id,
+        sid: shopId,
       },
     })
     .then((res) => {
@@ -1099,18 +1102,18 @@ const getStyle = (data) => {
 const status = ref([]);
 onBeforeMount(() => {
   api
-    .get("shop/getCategory", {
+    .get("/biz_api/shop/getCategory", {
       params: {
-        sid: router.currentRoute.value.query.id,
+        sid: shopId,
       },
     })
     .then((res) => {
       options.value = res.data.data;
     });
   api
-    .get("shop/getTradeStatus", {
+    .get("/biz_api/shop/getTradeStatus", {
       params: {
-        sid: router.currentRoute.value.query.id,
+        sid: shopId,
       },
     })
     .then((res) => {

@@ -160,6 +160,11 @@ import { onBeforeMount, reactive, ref } from "vue";
 import api from "@/api/api";
 import router from "@/router";
 import utils from "@/utils/utils";
+import pinia from "@/store/store";
+import { storeToRefs } from "pinia";
+import { useUserStore } from "@/store/user";
+const User = useUserStore(pinia);
+const { shopId } = storeToRefs(User);
 let dialogTableVisible = ref(false);
 let good = ref([]);
 let current = ref(1);
@@ -178,7 +183,7 @@ const form = reactive({
   phone: "",
   sex: "",
   age: "",
-  sid: router.currentRoute.value.query.id,
+  sid: shopId,
   limit: "",
 });
 const optionSex = [
@@ -240,7 +245,7 @@ const queryTaskList = () => {
     .post("Shop/getVipPage", {
       current: current.value,
       pageSize: pageSize.value,
-      sid: router.currentRoute.value.query.id,
+      sid: shopId,
       gid: searchText.value.trim(),
     })
     .then((res) => {
@@ -256,7 +261,7 @@ const addEmploree = () => {
   lod.value = true;
   api
     .post("Shop/addVip", {
-      sid: router.currentRoute.value.query.id,
+      sid: shopId,
       phone: form.phone.trim(),
       age: form.age,
       sex: form.sex,
@@ -279,7 +284,7 @@ const addEmploree4 = () => {
   lod.value = true;
   api
     .post("Shop/renewalVip", {
-      sid: router.currentRoute.value.query.id,
+      sid: shopId,
       phone: type.value,
       limit: form.limit,
     })

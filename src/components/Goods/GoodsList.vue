@@ -323,6 +323,11 @@ import api from "@/api/api";
 import { useRouter } from "vue-router/dist/vue-router";
 import Utils from "@/utils/utils";
 import utils from "@/utils/utils";
+import pinia from "@/store/store";
+import { storeToRefs } from "pinia";
+import { useUserStore } from "@/store/user";
+const User = useUserStore(pinia);
+const { shopId } = storeToRefs(User);
 
 let dialogFormVisible = ref(false);
 const dialogFormVisible2 = ref(false);
@@ -345,7 +350,7 @@ const form = reactive({
   price_in: 0,
   price_out: 0,
   price_vip: 0,
-  sid: router.currentRoute.value.query.id,
+  sid: shopId,
   date: "",
   profit: 0,
   shelfLife: "",
@@ -442,7 +447,7 @@ onBeforeMount(() => {
   api
     .get("Shop/getCategory", {
       params: {
-        sid: router.currentRoute.value.query.id,
+        sid: shopId,
       },
     })
     .then((res) => {
@@ -455,7 +460,7 @@ const clear7 = () => {
 };
 const queryTaskList = () => {
   lod.value = true;
-  sid.value = router.currentRoute.value.query.id;
+  sid.value = shopId;
   if (currentText != searchText.value) {
     current.value = 1;
     currentText = searchText.value;
@@ -465,7 +470,7 @@ const queryTaskList = () => {
       current: current.value,
       pageSize: pageSize.value,
       gid: searchText.value,
-      sid: router.currentRoute.value.query.id,
+      sid: shopId.value,
     })
     .then((res) => {
       good.value = res.data.data.records;
@@ -625,7 +630,7 @@ const beforeUpload = (file, id) => {
     .then((res) => {
       api
         .post("Goods/updateGoodImg", {
-          shopID: router.currentRoute.value.query.id,
+          shopID: shopId.value,
           remoteID: id,
           msg: res.data.msg,
         })
@@ -639,7 +644,7 @@ const beforeUpload = (file, id) => {
 const deleteGood = (row) => {
   api
     .post("/Goods/deleteGood", {
-      sid: router.currentRoute.value.query.id,
+      sid: shopId,
       id: row,
     })
     .then((res) => {

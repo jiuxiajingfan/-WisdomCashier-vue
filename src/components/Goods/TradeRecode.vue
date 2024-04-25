@@ -122,6 +122,11 @@ import { onBeforeMount, reactive, ref, watch } from "vue";
 import api from "@/api/api";
 import router from "@/router";
 import utils from "@/utils/utils";
+import pinia from "@/store/store";
+import { storeToRefs } from "pinia";
+import { useUserStore } from "@/store/user";
+const User = useUserStore(pinia);
+const { shopId } = storeToRefs(User);
 let trade = ref([]);
 let pageSize = ref(20);
 let total = ref(0);
@@ -165,7 +170,7 @@ const queryTaskList = () => {
       status: formInline.type,
       current: current.value,
       pageSize: pageSize.value,
-      sid: router.currentRoute.value.query.id,
+      sid: shopId,
       startTime: formInline.date === null ? null : formInline.date[0],
       endTime: formInline.date === null ? null : formInline.date[1],
     })

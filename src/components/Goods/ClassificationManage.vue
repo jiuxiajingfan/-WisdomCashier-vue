@@ -68,6 +68,12 @@ import { ElInput } from "element-plus";
 import api from "@/api/api";
 import router from "@/router";
 import utils from "@/utils/utils";
+import { useTradeStore } from "@/store/trade";
+import pinia from "@/store/store";
+import { storeToRefs } from "pinia";
+import { useUserStore } from "@/store/user";
+const User = useUserStore(pinia);
+const { shopId } = storeToRefs(User);
 const inputmodel = ref("");
 const dialogVisible = ref(false);
 const dialogVisible2 = ref(false);
@@ -78,7 +84,7 @@ const add = () => {
   api
     .get("Shop/addCategory", {
       params: {
-        sid: router.currentRoute.value.query.id,
+        sid: shopId,
         category: inputmodel.value.trim(),
       },
     })
@@ -96,7 +102,7 @@ const flush = () => {
   api
     .get("Shop/getCategory", {
       params: {
-        sid: router.currentRoute.value.query.id,
+        sid: shopId,
       },
     })
     .then((res) => {
@@ -108,7 +114,7 @@ const del = () => {
   api
     .get("Shop/delCategory", {
       params: {
-        sid: router.currentRoute.value.query.id,
+        sid: shopId,
         category: delc.value,
       },
     })

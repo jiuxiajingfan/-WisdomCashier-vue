@@ -298,6 +298,11 @@ import router from "@/router";
 import api from "@/api/api";
 import utils from "@/utils/utils";
 import QrcodeVue from "qrcode.vue";
+import { storeToRefs } from "pinia";
+import pinia from "@/store/store";
+import { useUserStore } from "@/store/user";
+const User = useUserStore(pinia);
+const { shopId } = storeToRefs(User);
 const diazfb = ref(false);
 const diavx = ref(false);
 const activeNames = ref(["1"]);
@@ -314,7 +319,7 @@ const post = () => {
   lod.value = true;
   api
     .post("Shop/updateShopMessage", {
-      sid: router.currentRoute.value.query.id,
+      sid: shopId,
       name: name.value.trim(),
       desc: desc.value.trim(),
     })
@@ -330,7 +335,7 @@ const refush = () => {
   api
     .get("Shop/getShopMessageByID", {
       params: {
-        sid: router.currentRoute.value.query.id,
+        sid: shopId,
       },
     })
     .then((res) => {

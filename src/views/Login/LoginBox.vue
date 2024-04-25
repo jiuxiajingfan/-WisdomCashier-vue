@@ -326,7 +326,7 @@ export default {
             utils.showMessage(res.data.code, res.data.msg);
           } else {
             let store = useAuthStore();
-            store.setToken("bearer " + res.data.data.token);
+            store.setToken("Bearer " + res.data.data.token);
             api.get("/account_api/account/getUserDetail").then((res) => {
               const user = useUserStore(pinia);
               let data = res.data.data;

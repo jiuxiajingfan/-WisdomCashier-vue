@@ -49,8 +49,12 @@
 import { onMounted, ref, watch } from "vue";
 import { Area, Bar, Line, Pie } from "@antv/g2plot";
 import api from "@/api/api";
-import router from "@/router";
 import utils from "@/utils/utils";
+import pinia from "@/store/store";
+import { storeToRefs } from "pinia";
+import { useUserStore } from "@/store/user";
+const User = useUserStore(pinia);
+const { shopId } = storeToRefs(User);
 const type = ref("daterange");
 let date = ref([]);
 const isCollapse = ref(true);
@@ -75,7 +79,7 @@ onMounted(() => {
   date.value = [nowtime2, nowtime];
   api
     .post("/trade/currentTradeMoney", {
-      sid: router.currentRoute.value.query.id,
+      sid: shopId,
       timeStart: date.value[0] + " 00:00:00",
       timeEnd: date.value[1] + " 23:59:59",
       // timeEnd: "2023-03-29 23:59:59",
@@ -223,7 +227,7 @@ const refuse = () => {
   }
   api
     .post("/trade/currentTradeMoney", {
-      sid: router.currentRoute.value.query.id,
+      sid: shopId,
       timeStart: date.value[0] + " 00:00:00",
       timeEnd: date.value[1] + " 23:59:59",
       // timeEnd: "2023-03-29 23:59:59",

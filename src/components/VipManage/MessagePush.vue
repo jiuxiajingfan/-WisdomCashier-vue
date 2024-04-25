@@ -127,6 +127,11 @@
 import { onBeforeMount, reactive, ref, watch } from "vue";
 import api from "@/api/api";
 import router from "@/router";
+import { storeToRefs } from "pinia";
+import pinia from "@/store/store";
+import { useUserStore } from "@/store/user";
+const User = useUserStore(pinia);
+const { shopId } = storeToRefs(User);
 let good = ref([]);
 const dialogFormVisible = ref(false);
 let current = ref(1);
@@ -143,7 +148,7 @@ const queryTaskList = () => {
     .post("Shop/getVipPushPage", {
       current: current.value,
       pageSize: pageSize.value,
-      sid: router.currentRoute.value.query.id,
+      sid: shopId,
       sex: formInline.sex,
       age: formInline.age,
       level: formInline.level,

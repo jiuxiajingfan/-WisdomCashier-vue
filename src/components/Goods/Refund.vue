@@ -184,6 +184,11 @@ import router from "@/router";
 import { Wechat, Alipay, PaperMoney } from "@icon-park/vue-next";
 import utils from "@/utils/utils";
 import { ElNotification } from "element-plus";
+import pinia from "@/store/store";
+import { storeToRefs } from "pinia";
+import { useUserStore } from "@/store/user";
+const User = useUserStore(pinia);
+const { shopId } = storeToRefs(User);
 let trade = ref([]);
 let tradeDetail = ref([]);
 let tradeRefund = ref([]);
@@ -209,7 +214,7 @@ const fluse = () => {
 const sure = () => {
   api
     .post("pay/refundPay", {
-      sid: router.currentRoute.value.query.id,
+      sid: shopId,
       money: mon.value,
       tradeNo: searchText.value,
       msg: msg.value,
@@ -245,7 +250,7 @@ const sure2 = () => {
   lod.value = true;
   api
     .post("trade/cashTradeRefund", {
-      sid: router.currentRoute.value.query.id,
+      sid: shopId,
       money: mon.value,
       tradeNo: searchText.value,
       msg: msg.value,
@@ -283,7 +288,7 @@ const refund = () => {
     .get("trade/queryRefund", {
       params: {
         id: searchText.value,
-        sid: router.currentRoute.value.query.id,
+        sid: shopId,
       },
     })
     .then((res) => {
@@ -312,7 +317,7 @@ const queryTaskList = () => {
   api
     .post("trade/queryTradePage", {
       id: searchText.value,
-      sid: router.currentRoute.value.query.id,
+      sid: shopId,
     })
     .then((res) => {
       if (res.data.code === 200) {

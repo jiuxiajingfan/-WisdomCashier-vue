@@ -175,6 +175,12 @@ import { onBeforeMount, ref } from "vue";
 import api from "@/api/api";
 import router from "@/router";
 import utils from "@/utils/utils";
+import { useTradeStore } from "@/store/trade";
+import pinia from "@/store/store";
+import { storeToRefs } from "pinia";
+import { useUserStore } from "@/store/user";
+const User = useUserStore(pinia);
+const { shopId } = storeToRefs(User);
 let dialogTableVisible = ref(false);
 let good = ref([]);
 let current = ref(1);
@@ -208,7 +214,7 @@ const queryTaskList2 = () => {
   api
     .get("shop/getApplyList", {
       params: {
-        sid: router.currentRoute.value.query.id,
+        sid: shopId,
       },
     })
     .then((res) => {
@@ -225,7 +231,7 @@ const queryTaskList = () => {
     .post("Shop/getEmploree", {
       current: current.value,
       pageSize: pageSize.value,
-      sid: router.currentRoute.value.query.id,
+      sid: shopId,
     })
     .then((res) => {
       good.value = res.data.data.records;
@@ -240,7 +246,7 @@ const addEmploree2 = (res, res2) => {
   lod.value = true;
   api
     .post("Shop/approval", {
-      sid: router.currentRoute.value.query.id,
+      sid: shopId,
       pid: res,
       type: res2,
     })
@@ -257,7 +263,7 @@ const addEmploree3 = () => {
   lod.value = true;
   api
     .post("Shop/changeRole", {
-      sid: router.currentRoute.value.query.id,
+      sid: shopId,
       pid: type2.value,
       type: type.value,
     })
@@ -275,7 +281,7 @@ const addEmploree = () => {
   api
     .get("Shop/addEmploree", {
       params: {
-        sid: router.currentRoute.value.query.id,
+        sid: shopId,
         pid: userPayID.value.trim(),
       },
     })
@@ -293,7 +299,7 @@ const addEmploree4 = (res) => {
   lod.value = true;
   api
     .post("Shop/deleteEmploree", {
-      sid: router.currentRoute.value.query.id,
+      sid: shopId,
       id: res,
     })
     .then((res) => {

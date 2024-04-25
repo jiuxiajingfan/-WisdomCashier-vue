@@ -48,7 +48,11 @@
 <script setup>
 import { onBeforeMount, ref } from "vue";
 import api from "@/api/api";
-import router from "@/router";
+import pinia from "@/store/store";
+import { storeToRefs } from "pinia";
+import { useUserStore } from "@/store/user";
+const User = useUserStore(pinia);
+const { shopId } = storeToRefs(User);
 
 let good = ref([]);
 let current = ref(1);
@@ -62,7 +66,7 @@ const queryTaskList = () => {
     .post("Goods/getGoodTemporaryPage", {
       current: current.value,
       pageSize: pageSize.value,
-      sid: router.currentRoute.value.query.id,
+      sid: shopId.value,
     })
     .then((res) => {
       good.value = res.data.data.records;

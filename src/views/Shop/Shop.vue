@@ -86,21 +86,28 @@ import HeaderBar from "@/views/Home/HeaderBar.vue";
 import api from "@/api/api";
 import router from "@/router";
 import utils from "@/utils/utils";
+import { useTradeStore } from "@/store/trade";
+import pinia from "@/store/store";
+import { storeToRefs } from "pinia";
+import { useUserStore } from "@/store/user";
+const User = useUserStore(pinia);
+const { shopId } = storeToRefs(User);
 const menuData = ref([]);
 const menuData2 = [];
 const openeds = ref(router.currentRoute.value.name);
 onBeforeMount(() => {
+  console.log(shopId);
   api
     .get("/biz_api/shop/getShopMenu", {
       params: {
-        shopId: router.currentRoute.value.query.id,
+        shopId: shopId.value,
       },
     })
     .then((res) => {
-      if (res.data.code !== 200) {
-        utils.showErrMessage(res.data.msg);
-        router.go("/myShop");
-      }
+      // if (res.data.code !== 200) {
+      //   utils.showErrMessage(res.data.msg);
+      //   router.go("/myShop");
+      // }
       menuData.value = res.data.data;
       menuData2.push(res.data.data);
     })

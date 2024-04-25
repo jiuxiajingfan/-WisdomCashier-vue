@@ -17,7 +17,11 @@
 <script setup>
 import { onBeforeMount, ref } from "vue";
 import api from "@/api/api";
-import router from "@/router";
+import { storeToRefs } from "pinia";
+import pinia from "@/store/store";
+import { useUserStore } from "@/store/user";
+const User = useUserStore(pinia);
+const { shopId } = storeToRefs(User);
 
 let good = ref([]);
 onBeforeMount(() => {
@@ -26,7 +30,7 @@ onBeforeMount(() => {
 const queryTaskList = () => {
   api
     .post("trade/getGoodRankPage", {
-      sid: router.currentRoute.value.query.id,
+      sid: shopId.value,
     })
     .then((res) => {
       good.value = res.data.data;

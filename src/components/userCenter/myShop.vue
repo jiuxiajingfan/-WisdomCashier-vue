@@ -105,6 +105,8 @@ let searchText2 = ref("");
 let currentText = "";
 import { useRouter } from "vue-router";
 import utils from "@/utils/utils";
+import pinia from "@/store/store";
+import { useUserStore } from "@/store/user";
 const router = useRouter();
 onBeforeMount(() => {
   api
@@ -172,12 +174,9 @@ const taskSizeChange = (ps) => {
   queryTaskList();
 };
 const go = (id) => {
-  router.push({
-    path: "/charge",
-    query: {
-      id: id,
-    },
-  });
+  const user = useUserStore(pinia);
+  user.setShopId(id);
+  router.push("/shop");
 };
 let tradetype2 = [
   { msg: "待审批", color: "#fffb09" },
