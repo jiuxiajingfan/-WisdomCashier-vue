@@ -656,9 +656,9 @@ const buyGoods = (type) => {
 const vipcheckFun = () => {
   lod.value = true;
   api
-    .get("Shop/isVip", {
+    .get("/biz_api/shop/isVip", {
       params: {
-        sid: shopId,
+        sid: shopId.value,
         phone: vipNo.value,
       },
     })
@@ -770,7 +770,7 @@ const save2 = () => {
   formref.value.validate((valid) => {
     if (valid) {
       api
-        .post("/Goods/addGood", {
+        .post("/biz_api/goods/addGood", {
           name: form.name,
           gid: form.gid,
           priceIn: form.price_in,
@@ -1067,7 +1067,7 @@ const getHangon = (param) => {
 let trdeList = ref([]);
 const leastFun = () => {
   api
-    .get("/trade/queryLeast", {
+    .get("/biz_api/trade/queryLeast", {
       params: {
         sid: shopId,
       },
@@ -1104,7 +1104,7 @@ onBeforeMount(() => {
   api
     .get("/biz_api/shop/getCategory", {
       params: {
-        sid: shopId,
+        sid: shopId.value,
       },
     })
     .then((res) => {
@@ -1113,7 +1113,7 @@ onBeforeMount(() => {
   api
     .get("/biz_api/shop/getTradeStatus", {
       params: {
-        sid: shopId,
+        sid: shopId.value,
       },
     })
     .then((res) => {

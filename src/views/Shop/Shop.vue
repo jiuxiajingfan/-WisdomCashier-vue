@@ -104,10 +104,10 @@ onBeforeMount(() => {
       },
     })
     .then((res) => {
-      // if (res.data.code !== 200) {
-      //   utils.showErrMessage(res.data.msg);
-      //   router.go("/myShop");
-      // }
+      if (res.data.code !== 200) {
+        utils.showErrMessage(res.data.msg);
+        router.go("/myShop");
+      }
       menuData.value = res.data.data;
       menuData2.push(res.data.data);
     })

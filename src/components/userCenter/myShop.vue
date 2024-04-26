@@ -176,7 +176,7 @@ const taskSizeChange = (ps) => {
 const go = (id) => {
   const user = useUserStore(pinia);
   user.setShopId(id);
-  router.push("/shop");
+  router.push("/charge");
 };
 let tradetype2 = [
   { msg: "待审批", color: "#fffb09" },

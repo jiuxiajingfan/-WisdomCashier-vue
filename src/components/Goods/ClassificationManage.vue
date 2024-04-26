@@ -84,7 +84,7 @@ const add = () => {
   api
     .get("Shop/addCategory", {
       params: {
-        sid: shopId,
+        sid: shopId.value,
         category: inputmodel.value.trim(),
       },
     })
@@ -100,9 +100,9 @@ const add = () => {
 };
 const flush = () => {
   api
-    .get("Shop/getCategory", {
+    .get("/biz_api/shop/getCategory", {
       params: {
-        sid: shopId,
+        sid: shopId.value,
       },
     })
     .then((res) => {
@@ -114,7 +114,7 @@ const del = () => {
   api
     .get("Shop/delCategory", {
       params: {
-        sid: shopId,
+        sid: shopId.value,
         category: delc.value,
       },
     })
