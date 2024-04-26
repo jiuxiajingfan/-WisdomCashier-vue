@@ -4,6 +4,7 @@ import router from "@/router";
 import { useAuthStore } from "../store/auth";
 import pinia from "@/store/store";
 import { Vue } from "vue-class-component";
+
 const store = useAuthStore(pinia);
 Vue.prototype.$http = axios;
 const api = axios.create({
@@ -34,35 +35,38 @@ api.interceptors.request.use(
 //响应拦截器
 api.interceptors.response.use(
   (response) => {
-    if (response.data.code === 200) {
-      debugger;
+    if (response.data.code === 200 || response.data.code === undefined) {
       return Promise.resolve(response);
+    } else if (response.data.code === 401) {
+      if (response.data.msg) {
+        utils.showErrMessage(response.data.msg);
+      } else {
+        utils.showErrMessage("账户已过期，请重新登录！");
+      }
+      localStorage.removeItem("token");
+      store.setToken(null);
+      router.push("/login");
     } else {
-      debugger;
       utils.showErrMessage(response.data.msg);
       return Promise.reject(response);
     }
   },
   (error) => {
     if (error.response) {
-      debugger;
       if (error.response.data instanceof Blob) {
         // 如果是文件操作的返回，由后续进行处理
         return Promise.resolve(error.response);
       }
-      debugger;
       switch (error.response.data.code) {
         // 401: 未登录 token过期
         // 未登录则跳转登录页面，并携带当前页面的路径
         // 在登录成功后返回当前页面，这一步需要在登录页操作。
         case 401:
-          debugger;
           if (error.response.data.msg) {
             utils.showErrMessage(error.response.data.msg);
           } else {
             utils.showErrMessage("账号已过期，请重新登录！");
           }
-          debugger;
           localStorage.removeItem("token");
           store.setToken(null);
           router.push("/login");

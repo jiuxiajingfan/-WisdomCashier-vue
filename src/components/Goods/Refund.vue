@@ -18,7 +18,7 @@
           <el-table-column label="名称" prop="name"></el-table-column>
           <el-table-column label="编号" prop="gid"></el-table-column>
           <el-table-column label="数量" prop="num"></el-table-column>
-          <el-table-column label="单价" prop="priceOut"></el-table-column>
+          <el-table-column label="单价" prop="price"></el-table-column>
         </el-table>
       </div>
     </el-table-column>
@@ -198,7 +198,7 @@ let msg = ref("");
 let centerDialogVisible7 = ref(false);
 const fluse = () => {
   api
-    .get("/trade/queryGoodsById", {
+    .get("/biz_api/trade/queryGoodsById", {
       params: {
         id: searchText.value,
       },
@@ -285,10 +285,10 @@ const sure2 = () => {
 const flag = ref(true);
 const refund = () => {
   api
-    .get("trade/queryRefund", {
+    .get("/biz_api/trade/queryRefund", {
       params: {
         id: searchText.value,
-        sid: shopId,
+        sid: shopId.value,
       },
     })
     .then((res) => {
@@ -315,9 +315,9 @@ const queryTaskList = () => {
     return;
   }
   api
-    .post("trade/queryTradePage", {
+    .post("/biz_api/trade/queryTradePage", {
       id: searchText.value,
-      sid: shopId,
+      sid: shopId.value,
     })
     .then((res) => {
       if (res.data.code === 200) {

@@ -13,6 +13,7 @@
             class="el-menu-vertical-demo"
             :collapse="isCollapse"
             :default-active="openeds"
+            default-openeds="0"
             router
           >
             <div class="receive">

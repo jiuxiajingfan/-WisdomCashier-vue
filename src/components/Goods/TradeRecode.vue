@@ -110,7 +110,7 @@
           <el-table-column property="gid" label="商品标签号" width="auto" />
           <el-table-column property="name" label="商品名" width="auto" />
           <el-table-column property="num" label="购买数量" width="auto" />
-          <el-table-column property="price" label="单价" width="auto" />
+          <el-table-column property="priceIn" label="单价" width="auto" />
         </el-table>
       </el-dialog>
     </div>
@@ -145,7 +145,7 @@ const formInline = reactive({
 let lod = ref(false);
 const querydetail = (row) => {
   api
-    .get("trade/queryGoodsById", {
+    .get("/biz_api/trade/queryGoodsById", {
       params: {
         id: row,
       },
@@ -165,12 +165,12 @@ onBeforeMount(() => {
 const queryTaskList = () => {
   lod.value = true;
   api
-    .post("trade/queryTradePage", {
+    .post("/biz_api/trade/queryTradePage", {
       id: formInline.id,
       status: formInline.type,
       current: current.value,
       pageSize: pageSize.value,
-      sid: shopId,
+      sid: shopId.value,
       startTime: formInline.date === null ? null : formInline.date[0],
       endTime: formInline.date === null ? null : formInline.date[1],
     })

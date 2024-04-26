@@ -686,7 +686,7 @@ const XJPay = () => {
 const queryTaskList = () => {
   lod.value = true;
   api
-    .get("/biz_api/goods/getGood", {
+    .get("/biz_api/goods/getGoods", {
       params: {
         gid: searchText.value.trim(),
         sid: shopId.value,
@@ -1069,7 +1069,7 @@ const leastFun = () => {
   api
     .get("/biz_api/trade/queryLeast", {
       params: {
-        sid: shopId,
+        sid: shopId.value,
       },
     })
     .then((res) => {
