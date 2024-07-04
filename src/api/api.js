@@ -4,6 +4,8 @@ import router from "@/router";
 import { useAuthStore } from "../store/auth";
 import pinia from "@/store/store";
 import { Vue } from "vue-class-component";
+import error from "@icon-park/vue-next/lib/icons/Error";
+
 const store = useAuthStore(pinia);
 Vue.prototype.$http = axios;
 const api = axios.create({
@@ -21,7 +23,6 @@ const api = axios.create({
 //请求拦截器
 api.interceptors.request.use(
   (config) => {
-    // const token = localStorage.getItem("token");
     let token = store.getToken;
     token && (config.headers.Authorization = token);
     return config;
@@ -34,71 +35,22 @@ api.interceptors.request.use(
 //响应拦截器
 api.interceptors.response.use(
   (response) => {
-    if (response.data.code === 200) {
-      debugger;
-      return Promise.resolve(response);
-    } else {
-      debugger;
-      utils.showErrMessage(response.data.msg);
-      return Promise.reject(response);
+    // 处理响应数据
+    if (response.data.code === 401) {
+      // 跳转到 login 页面
+      utils.remove("token");
+      router.push("login");
+      utils.showMessage(error);
+    } else if (response.data.code !== 200) {
+      utils.showMessage(error);
+      return Promise.reject(response.data.msg);
     }
+    return response;
   },
   (error) => {
-    if (error.response) {
-      debugger;
-      if (error.response.data instanceof Blob) {
-        // 如果是文件操作的返回，由后续进行处理
-        return Promise.resolve(error.response);
-      }
-      debugger;
-      switch (error.response.data.code) {
-        // 401: 未登录 token过期
-        // 未登录则跳转登录页面，并携带当前页面的路径
-        // 在登录成功后返回当前页面，这一步需要在登录页操作。
-        case 401:
-          debugger;
-          if (error.response.data.msg) {
-            utils.showErrMessage(error.response.data.msg);
-          } else {
-            utils.showErrMessage("账号已过期，请重新登录！");
-          }
-          debugger;
-          localStorage.removeItem("token");
-          store.setToken(null);
-          router.push("/login");
-          break;
-        // 403
-        // 无权限访问或操作的请求
-        case 403:
-          if (error.response.data.msg) {
-            utils.showErrMessage(error.response.data.msg);
-          }
-          break;
-        // 404请求不存在
-        case 404:
-          utils.showErrMessage("404");
-          break;
-        // 其他错误，直接抛出错误提示
-        default:
-          if (error.response.data) {
-            if (error.response.data.msg) {
-              utils.showErrMessage(error.response.data.msg);
-            } else {
-              utils.showErrMessage("报错了！");
-            }
-          }
-          break;
-      }
-      return Promise.reject(error);
-    } else {
-      //处理断网或请求超时，请求没响应
-      if (error.code == "ECONNABORTED" || error.message.includes("timeout")) {
-        utils.showErrMessage("检查网络");
-      } else {
-        utils.showErrMessage("未响应");
-      }
-      return Promise.reject(error);
-    }
+    // 处理响应错误
+    utils.showMessage(error);
+    return Promise.reject(error);
   }
 );
 

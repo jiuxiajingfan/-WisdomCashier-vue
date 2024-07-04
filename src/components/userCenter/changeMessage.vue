@@ -1,6 +1,6 @@
 <template>
   <div class="userMessage">
-    <el-card style="margin-top: 20vh">
+    <el-card style="margin-top: 20vh; height: 60vh">
       <el-collapse v-model="activeName" accordion>
         <el-collapse-item name="1">
           <template #title>

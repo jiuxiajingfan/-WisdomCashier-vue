@@ -25,8 +25,8 @@
           更改头像
         </el-button>
       </el-col>
-      <el-col :span="8" :offset="7" style="margin-top: 2%">
-        <el-card class="user-info-card" style="width: 600px">
+      <el-col :span="8" :offset="6" style="margin-top: 2%">
+        <el-card class="user-info-card" style="width: 40vw">
           <template #header>
             <div class="card-header">
               <span class="ss">用户信息</span>
