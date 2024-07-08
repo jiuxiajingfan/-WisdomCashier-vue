@@ -1069,7 +1069,7 @@ const leastFun = () => {
   api
     .get("/biz_api/trade/queryLeast", {
       params: {
-        sid: shopId,
+        sid: shopId.value,
       },
     })
     .then((res) => {

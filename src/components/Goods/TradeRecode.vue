@@ -145,7 +145,7 @@ const formInline = reactive({
 let lod = ref(false);
 const querydetail = (row) => {
   api
-    .get("trade/queryGoodsById", {
+    .get("/biz_api/trade/queryGoodsById", {
       params: {
         id: row,
       },
@@ -165,12 +165,12 @@ onBeforeMount(() => {
 const queryTaskList = () => {
   lod.value = true;
   api
-    .post("trade/queryTradePage", {
+    .post("/biz_api/trade/queryTradePage", {
       id: formInline.id,
       status: formInline.type,
       current: current.value,
       pageSize: pageSize.value,
-      sid: shopId,
+      sid: shopId.value,
       startTime: formInline.date === null ? null : formInline.date[0],
       endTime: formInline.date === null ? null : formInline.date[1],
     })

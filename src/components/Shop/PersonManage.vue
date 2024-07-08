@@ -212,7 +212,7 @@ const options = [
 ];
 const queryTaskList2 = () => {
   api
-    .get("shop/getApplyList", {
+    .get("/biz_api/shop/getApplyList", {
       params: {
         sid: shopId,
       },
