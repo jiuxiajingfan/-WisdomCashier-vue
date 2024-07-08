@@ -18,7 +18,7 @@
           <el-table-column label="名称" prop="name"></el-table-column>
           <el-table-column label="编号" prop="gid"></el-table-column>
           <el-table-column label="数量" prop="num"></el-table-column>
-          <el-table-column label="单价" prop="priceOut"></el-table-column>
+          <el-table-column label="单价" prop="price"></el-table-column>
         </el-table>
       </div>
     </el-table-column>
